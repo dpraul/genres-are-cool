@@ -30,11 +30,24 @@ def make_graphs():
 
     datamap = {tag: {genre: np.empty(q.count()) for genre in all_genres} for tag in SPOTIFY_TAGS}
 
-    csvfile = open('%s/%s' % (out_folder, 'data.csv'), 'wb')
-    writer = csv.writer(csvfile)
-    writer.writerow(SPOTIFY_TAGS + ['genre', ])
+    # get ready to save CSV files
+    training_csv = open('%s/%s' % (out_folder, 'train.csv'), 'wb')
+    training_writer = csv.writer(training_csv)
 
-    empty_row = [0 for _ in SPOTIFY_TAGS] + [0, ]
+    test_csv = open('%s/%s' % (out_folder, 'test.csv'), 'wb')
+    test_writer = csv.writer(test_csv)
+
+    all_csv = open('%s/%s' % (out_folder, 'all.csv'), 'wb')
+    all_writer = csv.writer(all_csv)
+
+    # write header to every file
+    header = SPOTIFY_TAGS + ['genre', ]
+    training_writer.writerow(header)
+    test_writer.writerow(header)
+    all_writer.writerow(header)
+
+    # this row will be used to write each row
+    empty_row = [0 for _ in header]
 
     for i, row in enumerate(q):
         for j, tag in enumerate(SPOTIFY_TAGS):
@@ -43,10 +56,18 @@ def make_graphs():
             datamap[tag][row.genre][genre_data_count[row.genre]] = attr
 
         empty_row[-1] = genre_index[row.genre]
-        writer.writerow(empty_row)
         genre_data_count[row.genre] += 1
 
-    csvfile.close()  # save all the data into a CSV file for TensorFlow
+        all_writer.writerow(empty_row)
+        if i % 10 == 0:  # take about a 10th of the data and use it as testing data
+            test_writer.writerow(empty_row)
+        else:
+            training_writer.writerow(empty_row)
+
+    # package data for TensorFlow
+    all_csv.close()
+    training_csv.close()
+    test_csv.close()
 
     for tag, genremap in datamap.iteritems():
         # resize datamap arrays to get rid of empty cells
@@ -66,11 +87,11 @@ def make_graphs():
     ax.set_title('Genre Distribution')
     fig.savefig('%s/%s.png' % (graph_folder, 'genres'), bbox_inches='tight')
 
-    with open('%s/%s' % (out_folder, 'classes.csv'), 'wb') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(['class', 'genre', 'count'])
+    with open('%s/%s' % (out_folder, 'classes.csv'), 'wb') as classes_csv:
+        classes_writer = csv.writer(classes_csv)
+        classes_writer.writerow(['class', 'genre', 'count'])
         for genre in all_genres:
-            writer.writerow([genre_index[genre], genre, genre_data_count[genre]])
+            classes_writer.writerow([genre_index[genre], genre, genre_data_count[genre]])
 
     with open('%s/%s' % (out_folder, 'num_classes.txt'), 'w') as f:
         f.write('%s' % len(all_genres))
