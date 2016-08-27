@@ -32,7 +32,7 @@ def _get_genres_from_txt(dataset):
                 continue
             data = line.split('\t', 2)
             track_id = data[0]
-            genre = data[1]
+            genre = data[1].replace('\n', '')
             genres[track_id] = genre
 
     with open('%s/%s' % (dataset['folder'], dataset['json']), 'w') as f:
