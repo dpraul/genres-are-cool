@@ -20,6 +20,7 @@ session = Session()
 def make_graphs():
     genres_query = session.query(Song.genre.distinct().label('genre'))
     all_genres = [row.genre for row in genres_query.all()]
+    genre_index = {genre: i for i, genre in enumerate(all_genres)}
     genre_data_count = {genre: 0 for genre in all_genres}
 
     q = session.query(Song)
@@ -30,7 +31,7 @@ def make_graphs():
     writer = csv.writer(csvfile)
     writer.writerow(SPOTIFY_TAGS + ['genre', ])
 
-    empty_row = [0 for _ in SPOTIFY_TAGS] + ['', ]
+    empty_row = [0 for _ in SPOTIFY_TAGS] + [0, ]
 
     for i, row in enumerate(q):
         for j, tag in enumerate(SPOTIFY_TAGS):
@@ -38,7 +39,7 @@ def make_graphs():
             empty_row[j] = attr
             datamap[tag][row.genre][genre_data_count[row.genre]] = attr
 
-        empty_row[-1] = row.genre
+        empty_row[-1] = genre_index[row.genre]
         writer.writerow(empty_row)
         genre_data_count[row.genre] += 1
 
@@ -61,6 +62,9 @@ def make_graphs():
     pie = ax.pie(genre_data_count.values(), labels=genre_data_count.keys())
     ax.set_title('Genre Distribution')
     fig.savefig('%s/%s.png' % (folder, 'genres'), bbox_inches='tight')
-    print genre_data_count
+
+    print 'i\tCount\tGenre'
+    for genre in all_genres:
+        print '%s\t%s \t%s' % (genre_index[genre], genre_data_count[genre], genre)
 
     plt.show()
