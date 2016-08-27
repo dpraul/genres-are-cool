@@ -1,0 +1,8 @@
+default:
+  debug: False
+  database: 'sqlite:///data/db/all.db'
+  genre_dataset: 'tagtraum_cd2c'
+
+  spotify:
+    id: 'OAUTHID'
+    secret: 'OAUTHSECRET'
