@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 from genres import Song, Session
-from genres.features import SPOTIFY_TAGS, SKIP_TAGS, MULTIPLIERS
+from genres.features import SPOTIFY_TAGS, MULTIPLIERS
 
 from genres import config
 
@@ -28,8 +28,8 @@ def make_graphs():
 
     q = session.query(Song)
 
-    all_tags = [tag for tag in SPOTIFY_TAGS if tag not in SKIP_TAGS]
-    mul = [m for i, m in enumerate(MULTIPLIERS) if SPOTIFY_TAGS[i] not in SKIP_TAGS]
+    all_tags = SPOTIFY_TAGS
+    mul = MULTIPLIERS
 
     datamap = {tag: {genre: np.empty(q.count()) for genre in all_genres} for tag in all_tags}
 

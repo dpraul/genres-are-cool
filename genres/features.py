@@ -8,8 +8,6 @@ SPOTIFY_TAGS = ['acousticness', 'danceability', 'duration_ms', 'energy', 'instru
 
 MULTIPLIERS = [100, 100, 0.0005, 100, 100, 10, 100, 10, 100, 100, 0.5, 50, 100]
 # tags that will be ignored when building the CSV for TensorFlow
-#SKIP_TAGS = ['duration_ms', 'key', 'mode', 'tempo', 'time_signature']
-SKIP_TAGS = []
 
 client_credentials_manager = SpotifyClientCredentials(client_id=config['spotify']['id'],
                                                       client_secret=config['spotify']['secret'])
