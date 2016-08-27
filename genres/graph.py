@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 from genres import Song, Session
-from genres.features import SPOTIFY_TAGS
+from genres.features import SPOTIFY_TAGS, SKIP_TAGS, MULTIPLIERS
 
 from genres import config
 
@@ -28,7 +28,10 @@ def make_graphs():
 
     q = session.query(Song)
 
-    datamap = {tag: {genre: np.empty(q.count()) for genre in all_genres} for tag in SPOTIFY_TAGS}
+    all_tags = [tag for tag in SPOTIFY_TAGS if tag not in SKIP_TAGS]
+    mul = [m for i, m in enumerate(MULTIPLIERS) if SPOTIFY_TAGS[i] not in SKIP_TAGS]
+
+    datamap = {tag: {genre: np.empty(q.count()) for genre in all_genres} for tag in all_tags}
 
     # get ready to save CSV files
     training_csv = open('%s/%s' % (out_folder, 'train.csv'), 'wb')
@@ -40,18 +43,14 @@ def make_graphs():
     all_csv = open('%s/%s' % (out_folder, 'all.csv'), 'wb')
     all_writer = csv.writer(all_csv)
 
-    # write header to every file
-    header = SPOTIFY_TAGS + ['genre', ]
-    training_writer.writerow(header)
-    test_writer.writerow(header)
-    all_writer.writerow(header)
+    header = all_tags + ['genre', ]  # theoretical header for each CSV
 
     # this row will be used to write each row
     empty_row = [0 for _ in header]
 
     for i, row in enumerate(q):
-        for j, tag in enumerate(SPOTIFY_TAGS):
-            attr = getattr(row, tag)
+        for j, tag in enumerate(all_tags):
+            attr = getattr(row, tag) * mul[j]
             empty_row[j] = attr
             datamap[tag][row.genre][genre_data_count[row.genre]] = attr
 
@@ -95,5 +94,8 @@ def make_graphs():
 
     with open('%s/%s' % (out_folder, 'num_classes.txt'), 'w') as f:
         f.write('%s' % len(all_genres))
+
+    with open('%s/%s' % (out_folder, 'num_features.txt'), 'w') as f:
+        f.write('%s' % len(all_tags))
 
     plt.show()

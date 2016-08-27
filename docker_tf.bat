@@ -1,0 +1,1 @@
+docker run -it -v /c/projects/genres-are-cool:/notebooks tf python run.py %1

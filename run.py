@@ -1,23 +1,34 @@
+from __future__ import absolute_import
+from __future__ import division
+
 import logging
 import sys
 
-from genres.fill_database import fill_from_list
-from genres.graph import make_graphs
+from genres import config
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(message)s',
-    level=logging.DEBUG
-)
+if config['logging'] == 'console':
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(message)s',
+        level=logging.DEBUG
+    )
+elif config['logging'] == 'file':
+    logging.basicConfig(
+        filename='output.log',
+        format='%(asctime)s - %(name)s - %(message)s',
+        level=logging.DEBUG
+    )
+else:
+    raise ValueError('Invalid value for config.logging - must be `file` or `console`')
 
 
 def print_help():
-    print 'display_song.py'
+    print 'run.py'
     print 'usage:'
-    print '   python display_song.py <command>'
+    print '   python run.py <command>'
     print 'example:'
-    print '   python display_song.py graph'
+    print '   python run.py graph'
     print 'INPUTS'
-    print '   <command> - build, graph'
+    print '   <command> - build, graph, train, classify'
 
 
 def main():
@@ -27,10 +38,19 @@ def main():
 
     command = sys.argv[1]
     if command == 'build':
+        from genres.fill_database import fill_from_list
         fill_from_list()
     elif command == 'graph':
+        from genres.graph import make_graphs
         make_graphs()
-
+    elif command == 'train':
+        from genres.train import train
+        train()
+    elif command == 'classify':
+        from genres.classify import start_classify
+        start_classify()
+    else:
+        print_help()
 
 if __name__ == '__main__':
     main()

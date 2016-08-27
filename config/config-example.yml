@@ -3,6 +3,16 @@ default:
   database: 'sqlite:///data/db/all.db'
   genre_dataset: 'tagtraum_cd2c'
   out_folder: 'data/out'
+  logging: 'console'  # file or console
+
+  network:
+    nodes: 800
+    learning_rate: 0.003
+    batch_size: 800
+    p_keep_in: 0.5
+    p_keep_hidden: 0.5
+    epochs: 200
+    bn_epsilon: 0.1
 
   spotify:
     id: 'OAUTHID'

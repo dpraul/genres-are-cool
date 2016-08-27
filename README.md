@@ -20,7 +20,10 @@ then run `pip install -r requirements.txt` inside the env. The packages used are
  - spotipy
  
 TensorFlow is also required. Install it using the [TensorFlow Download and Setup guide](https://www.tensorflow.org/versions/r0.10/get_started/os_setup.html#download-and-setup).
-If you're using Anaconda, this is very easy.
+If you're using Anaconda on Linux, this is very easy. Even easier, you can use the docker image included in this repo.
+First, [download Docker](https://www.docker.com/products/overview). CD into the `docker` directory, and execute
+`docker build -t tf .` to build the Docker image as the image named `tf`. On Windows, you can now use the included
+`docker_tf.bat` to execute `run.py` commands in the Docker image, i.e. `docker_tf train`.
  
 Spotify OAuth credentials are needed to get song analysis information. Copy `config_sample.yml` to a new file 
 `config.yml` and replace the Spotify client_id and client_secret with your OAuth credentials.
@@ -71,23 +74,23 @@ What follows uses the `tagtraum_cd2c` dataset.
 
 Here is the genre distribution of the data:
 
-| Genre      	| Count 	|
-|------------	|-------	|
-| Rock       	| 10767 	|
-| Electronic 	| 2895  	|
-| Jazz       	| 1890  	|
-| Pop        	| 1757  	|
-| Rap        	| 1431  	|
-| Country    	| 1225  	|
-| RnB        	| 1219  	|
-| Metal      	| 1215  	|
-| Reggae     	| 1100  	|
-| Blues      	| 840   	|
-| Folk       	| 675   	|
-| Punk       	| 480   	|
-| Latin      	| 464   	|
-| World      	| 290   	|
-| New Age    	| 173   	|
+| class 	| genre      	| count 	|
+|-------	|------------	|-------	|
+| 0     	| Electronic 	| 2895  	|
+| 1     	| Metal      	| 1215  	|
+| 2     	| Jazz       	| 1888  	|
+| 3     	| RnB        	| 1219  	|
+| 4     	| Rock       	| 10766 	|
+| 5     	| World      	| 290   	|
+| 6     	| Reggae     	| 1100  	|
+| 7     	| Pop        	| 1757  	|
+| 8     	| Rap        	| 1430  	|
+| 9     	| Country    	| 1225  	|
+| 10    	| Folk       	| 675   	|
+| 11    	| Latin      	| 464   	|
+| 12    	| Punk       	| 480   	|
+| 13    	| Blues      	| 840   	|
+| 14    	| New Age    	| 173   	|
 
 ![Pie Chart of Distribution](./graphs/tagtraum_cd2c/genres.png "Genre Distribution")
 
