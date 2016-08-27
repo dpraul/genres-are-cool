@@ -10,10 +10,13 @@ from genres.features import SPOTIFY_TAGS
 
 from genres import config
 
-folder = 'graphs/%s' % config['genre_dataset']
+graph_folder = 'graphs/%s' % config['genre_dataset']
+out_folder = config['out_folder']
 
-if not os.path.exists(folder):
-    os.makedirs(folder)  # directory to save graphs
+if not os.path.exists(graph_folder):
+    os.makedirs(graph_folder)  # directory to save graphs
+if not os.path.exists(out_folder):
+    os.makedirs(out_folder)  # directory to save graphs
 session = Session()
 
 
@@ -27,7 +30,7 @@ def make_graphs():
 
     datamap = {tag: {genre: np.empty(q.count()) for genre in all_genres} for tag in SPOTIFY_TAGS}
 
-    csvfile = open('data/data.csv', 'wb')
+    csvfile = open('%s/%s' % (out_folder, 'data.csv'), 'wb')
     writer = csv.writer(csvfile)
     writer.writerow(SPOTIFY_TAGS + ['genre', ])
 
@@ -55,16 +58,21 @@ def make_graphs():
         ax = fig.add_subplot(111)
         bp = ax.boxplot(genremap.values(), labels=genremap.keys(), showmeans=True, showfliers=False)
         ax.set_title(tag)
-        fig.savefig('%s/%s.png' % (folder, tag), bbox_inches='tight')
+        fig.savefig('%s/%s.png' % (graph_folder, tag), bbox_inches='tight')
 
     fig = plt.figure(figsize=(6, 6))
     ax = fig.add_subplot(111)
     pie = ax.pie(genre_data_count.values(), labels=genre_data_count.keys())
     ax.set_title('Genre Distribution')
-    fig.savefig('%s/%s.png' % (folder, 'genres'), bbox_inches='tight')
+    fig.savefig('%s/%s.png' % (graph_folder, 'genres'), bbox_inches='tight')
 
-    print 'i\tCount\tGenre'
-    for genre in all_genres:
-        print '%s\t%s \t%s' % (genre_index[genre], genre_data_count[genre], genre)
+    with open('%s/%s' % (out_folder, 'classes.csv'), 'wb') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['class', 'genre', 'count'])
+        for genre in all_genres:
+            writer.writerow([genre_index[genre], genre, genre_data_count[genre]])
+
+    with open('%s/%s' % (out_folder, 'num_classes.txt'), 'w') as f:
+        f.write('%s' % len(all_genres))
 
     plt.show()

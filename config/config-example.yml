@@ -2,6 +2,7 @@ default:
   debug: False
   database: 'sqlite:///data/db/all.db'
   genre_dataset: 'tagtraum_cd2c'
+  out_folder: 'data/out'
 
   spotify:
     id: 'OAUTHID'
