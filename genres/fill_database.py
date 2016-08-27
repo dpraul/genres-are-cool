@@ -55,11 +55,15 @@ def fill_from_aggregate():
         features_batch = get_features(batch.keys())
         for features in features_batch:
             song = batch[features['id']]
+            miss = False
             for key in SPOTIFY_TAGS:
                 if key not in features:
-                    logger.warning('%s not found on Spotify for %s' % (key, song.track_id))
-                    continue
+                    miss = True
+                    logger.warning('%s not found on Spotify for %s. Will not keep data.' % (key, song.track_id))
+                    break
                 setattr(song, key, features[key])
+            if miss:  # skip songs that are missing data
+                continue
 
             session.add(song)
             logger.info('Added %s to session.' % song.track_id)
