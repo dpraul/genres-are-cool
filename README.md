@@ -9,19 +9,22 @@ To accommodate, the goal of the project is to create a machine learning algorith
 genre using those Spotify audio features. To do this, a new database of features must be generated using
 the MSD and Spotify Web API.
 
+
 ## 1. Requirements
 
-All requirements can be installed by running `pip install -r requirements.txt` inside a virtualenv. The packages used are:
+The project depends on the Python 2.7 SciPy stack plus some other dependencies. The best way to set this up is to use one of the
+[SciPy-stack compatible Python distributions](http://www.scipy.org/install.html) (for instance, Anaconda) to install Python into an `env` folder,
+then run `pip install -r requirements.txt` inside the env. The packages used are:
 
- - SQLAlchemy
- - matplotlib
- - numpy
- - pytables
- - TensorFlow
+ - PyYAML
  - spotipy
+ 
+TensorFlow is also required. Install it using the [TensorFlow Download and Setup guide](https://www.tensorflow.org/versions/r0.10/get_started/os_setup.html#download-and-setup).
+If you're using Anaconda, this is very easy.
  
 Spotify OAuth credentials are needed to get song analysis information. Copy `config_sample.yml` to a new file 
 `config.yml` and replace the Spotify client_id and client_secret with your OAuth credentials.
+ 
  
 ## 2. Data
 
@@ -51,6 +54,7 @@ If using yajie hu's mapping, extract it to `data/GenreTags/GenreTags.txt`.
 Change the `genre_dataset` key in `config.yml` to either `tagtraum_cd2`, `tagtraum_cd2c`, or `yaji`, matching
 the choice you made.
 
+
 ## 3. Building the database
 
 Firstly, the new Spotify database has to be built. To do this, run `python run.py build`. This might take a while as it can only
@@ -61,6 +65,35 @@ explorer will show about 27,000 entries using tagtraum's cd2c.
 
 
 ## 4. Graphs
+
+Running `python run.py graph` will generate graphs for the data. 
+What follows uses the `tagtraum_cd2c` dataset.
+
+Here is the genre distribution of the data:
+
+| Genre      	| Count 	|
+|------------	|-------	|
+| Rock       	| 10767 	|
+| Electronic 	| 2895  	|
+| Jazz       	| 1890  	|
+| Pop        	| 1757  	|
+| Rap        	| 1431  	|
+| Country    	| 1225  	|
+| RnB        	| 1219  	|
+| Metal      	| 1215  	|
+| Reggae     	| 1100  	|
+| Blues      	| 840   	|
+| Folk       	| 675   	|
+| Punk       	| 480   	|
+| Latin      	| 464   	|
+| World      	| 290   	|
+| New Age    	| 173   	|
+
+![Pie Chart of Distribution](./graphs/tagtraum_cd2c/genres.png "Genre Distribution")
+
+
+## 5. Train
+
 
 
 ## References
