@@ -1,4 +1,5 @@
 import os
+import csv
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,7 +11,9 @@ from genres.features import SPOTIFY_TAGS
 from genres import config
 
 folder = 'graphs/%s' % config['genre_dataset']
-os.makedirs(folder)  # directory to save graphs
+
+if not os.path.exists(folder):
+    os.makedirs(folder)  # directory to save graphs
 session = Session()
 
 
@@ -21,18 +24,25 @@ def make_graphs():
 
     q = session.query(Song)
 
-    all_data = np.empty([q.count(), len(SPOTIFY_TAGS)])
-    genres = ['' for _ in xrange(q.count())]
     datamap = {tag: {genre: np.empty(q.count()) for genre in all_genres} for tag in SPOTIFY_TAGS}
+
+    csvfile = open('data/data.csv', 'wb')
+    writer = csv.writer(csvfile)
+    writer.writerow(SPOTIFY_TAGS + ['genre', ])
+
+    empty_row = [0 for _ in SPOTIFY_TAGS] + ['', ]
 
     for i, row in enumerate(q):
         for j, tag in enumerate(SPOTIFY_TAGS):
             attr = getattr(row, tag)
-            all_data[i, j] = attr
+            empty_row[j] = attr
             datamap[tag][row.genre][genre_data_count[row.genre]] = attr
 
-        genres[i] = row.genre
+        empty_row[-1] = row.genre
+        writer.writerow(empty_row)
         genre_data_count[row.genre] += 1
+
+    csvfile.close()  # save all the data into a CSV file for TensorFlow
 
     for tag, genremap in datamap.iteritems():
         # resize datamap arrays to get rid of empty cells

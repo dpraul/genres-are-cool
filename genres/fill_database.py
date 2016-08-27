@@ -14,7 +14,6 @@ from genres import config
 
 logger = logging.getLogger(__name__)
 session = Session()
-genres = get_genre_map(config['genre_dataset'])
 
 SLEEP_TIME = 15
 
@@ -26,6 +25,7 @@ def fill_from_aggregate():
     https://github.com/tbertinmahieux/MSongsDB/blob/master/PythonSrc/create_aggregate_file.py
     """
     filename = 'data/MSD/aggregate.h5'
+    genres = get_genre_map(config['genre_dataset'])
 
     msd = SongEntries(filename)
     for chunk in chunks_range(msd.num_songs, 100):  # chunks of 100 so we can perform batches of Spotify grabs
@@ -70,6 +70,7 @@ def fill_from_aggregate():
 
 def fill_from_list():
     tracks = get_all_tracks()
+    genres = get_genre_map(config['genre_dataset'])
 
     batch = {}  # spotifyId: Song
     i = -1
