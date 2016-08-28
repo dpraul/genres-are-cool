@@ -17,8 +17,6 @@ elif config['logging'] == 'file':
         format='%(asctime)s - %(name)s - %(message)s',
         level=logging.DEBUG
     )
-else:
-    raise ValueError('Invalid value for config.logging - must be `file` or `console`')
 
 
 def print_help():

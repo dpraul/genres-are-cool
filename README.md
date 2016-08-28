@@ -69,10 +69,13 @@ explorer will show about 27,000 entries using tagtraum's cd2c.
 
 ## 4. Graphs
 
-Running `python run.py graph` will generate graphs for the data. 
-What follows uses the `tagtraum_cd2c` dataset.
+Running `python run.py graph` will generate graphs for the data. It will also prepare CSV data for TensorFlow.
 
-Here is the genre distribution of the data:
+Some multipliers are specified in `genres.features.MULTIPLIERS` to scale all the data to around the same range
+(somewhere in the power of 10^2). This is done so the classifier performs better
+
+### `tagtraum_cd2c` dataset
+#### Sample data:
 
 | class 	| genre      	| count 	|
 |-------	|------------	|-------	|
@@ -94,13 +97,71 @@ Here is the genre distribution of the data:
 
 ![Pie Chart of Distribution](./graphs/tagtraum_cd2c/genres.png "Genre Distribution")
 
+#### acousticness
+![acousticness](./graphs/tagtraum_cd2c/acousticness.png "acousticness")
+
+#### danceability
+![danceability](./graphs/tagtraum_cd2c/danceability.png "danceability")
+
+#### duration_ms
+![duration_ms](./graphs/tagtraum_cd2c/duration_ms.png "duration_ms")
+
+#### energy
+![energy](./graphs/tagtraum_cd2c/energy.png "energy")
+
+#### instrumentalness
+![instrumentalness](./graphs/tagtraum_cd2c/instrumentalness.png "instrumentalness")
+
+#### key
+![key](./graphs/tagtraum_cd2c/key.png "key")
+
+#### liveness
+![liveness](./graphs/tagtraum_cd2c/liveness.png "liveness")
+
+#### loudness
+![loudness](./graphs/tagtraum_cd2c/loudness.png "loudness")
+
+#### mode
+![mode](./graphs/tagtraum_cd2c/mode.png "mode")
+
+#### speechiness
+![speechiness](./graphs/tagtraum_cd2c/speechiness.png "speechiness")
+
+#### tempo
+![tempo](./graphs/tagtraum_cd2c/tempo.png "tempo")
+
+#### time_signature
+![time_signature](./graphs/tagtraum_cd2c/time_signature.png "time_signature")
+
+#### valence
+![valence](./graphs/tagtraum_cd2c/valence.png "valence")
+
 
 ## 5. Train
 
+With data ready, all that's left is to configure the network before starting training. Example values are given
+in the `network` section of `config_example.yml`. These are also the values used to generate any models or
+graphs following this point.
+ 
+Start training by running `python run.py train`. To run this through the repo's
+Docker image, run `docker_tf train`. Accuracy per epoch is stored in `training_data.csv`.
 
+The training can be stopped at any time via `Ctrl+C`, and (assuming it hasn't lapsed every epoch given in the config)
+it will be resumed from where it left off by using the `checkpoint` files stored in `%out_folder%/model`.
+
+## 6. Classify
+
+With the model trained, any track on Spotify can be classified using the network! To do so, run
+either `python run.py classify -t "track_id"` or `python run.py classify -s "search terms"`. This still depends
+on TensorFlow, so if you've been running TensorFlow through the included Docker image you should run
+`docker_tf run.py classify <your parameters>`. 
 
 ## References
 
-https://github.com/jazdev/genreXpose
+- https://github.com/tbertinmahieux/MSongsDB for extracting information from the MSD
+- for building the model: 
+    - https://www.tensorflow.org/versions/r0.10/tutorials/mnist/pros/index.html
+    - https://github.com/nlintz/TensorFlow-Tutorials
+    - http://r2rt.com/implementing-batch-normalization-in-tensorflow.html (batch normalization)
 
-https://github.com/tbertinmahieux/MSongsDB
+

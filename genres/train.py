@@ -68,7 +68,7 @@ def model(x, w_h, w_h2, w_o, p_keep_input, p_keep_hidden, is_training):
     return tf.matmul(h2, w_o)
 
 
-def train():
+def train(data_to_classify=None):
     # initialize training sets
     training = load_csv_without_header(filename=SPOTIFY_TRAINING, n_classes=NUM_CLASSES,
                                        features_dtype=np.float64)
@@ -114,23 +114,29 @@ def train():
 
             start = global_step.eval() + 1  # get last global_step
 
-            batch_size = NET_CONFIG['batch_size']
-            for i in range(start, NET_CONFIG['epochs']):
-                for start, end in zip(range(0, len(tr_x), batch_size), range(batch_size, len(tr_x)+1, batch_size)):
-                    # run training over each batch
-                    sess.run(train_op, feed_dict={x: tr_x[start:end], y: tr_y[start:end],
-                                                  p_keep_input: NET_CONFIG['p_keep_in'],
-                                                  p_keep_hidden: NET_CONFIG['p_keep_hidden'],
-                                                  is_training: True})
+            if data_to_classify is None:  # train model
+                batch_size = NET_CONFIG['batch_size']
+                for i in range(start, NET_CONFIG['epochs']):
+                    for start, end in zip(range(0, len(tr_x), batch_size), range(batch_size, len(tr_x)+1, batch_size)):
+                        # run training over each batch
+                        sess.run(train_op, feed_dict={x: tr_x[start:end], y: tr_y[start:end],
+                                                      p_keep_input: NET_CONFIG['p_keep_in'],
+                                                      p_keep_hidden: NET_CONFIG['p_keep_hidden'],
+                                                      is_training: True})
 
-                global_step.assign(i).eval()  # set and update(eval) global_step with index, i
-                saver.save(sess, '%s/%s' % (model_dir, "model.ckpt"), global_step=global_step)
-                # record accuracy after each training session
-                accuracy = np.mean(
-                    np.argmax(te_y, axis=1) == sess.run(
-                        predict_op, feed_dict={x: te_x, y: te_y, p_keep_input: 1.0,
-                                               p_keep_hidden: 1.0, is_training: False}
+                    global_step.assign(i).eval()  # set and update(eval) global_step with index, i
+                    saver.save(sess, '%s/%s' % (model_dir, "model.ckpt"), global_step=global_step)
+                    # record accuracy after each training session
+                    accuracy = np.mean(
+                        np.argmax(te_y, axis=1) == sess.run(
+                            predict_op, feed_dict={x: te_x, y: te_y, p_keep_input: 1.0,
+                                                   p_keep_hidden: 1.0, is_training: False}
+                        )
                     )
-                )
-                training_writer.writerow([i, accuracy])
-                logging.info('i=%s, accuracy=%s' % (i, accuracy))
+                    training_writer.writerow([i, accuracy])
+                    logging.info('i=%s, accuracy=%s' % (i, accuracy))
+            else:  # perform a prediction
+                prediction = sess.run(predict_op, feed_dict={
+                    x: data_to_classify, p_keep_input: 1.0, p_keep_hidden: 1.0, is_training: False
+                })[0]
+                return prediction
