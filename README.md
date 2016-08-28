@@ -97,43 +97,30 @@ Some multipliers are specified in `genres.features.MULTIPLIERS` to scale all the
 
 ![Pie Chart of Distribution](./graphs/tagtraum_cd2c/genres.png "Genre Distribution")
 
-#### acousticness
 ![acousticness](./graphs/tagtraum_cd2c/acousticness.png "acousticness")
 
-#### danceability
 ![danceability](./graphs/tagtraum_cd2c/danceability.png "danceability")
 
-#### duration_ms
 ![duration_ms](./graphs/tagtraum_cd2c/duration_ms.png "duration_ms")
 
-#### energy
 ![energy](./graphs/tagtraum_cd2c/energy.png "energy")
 
-#### instrumentalness
 ![instrumentalness](./graphs/tagtraum_cd2c/instrumentalness.png "instrumentalness")
 
-#### key
 ![key](./graphs/tagtraum_cd2c/key.png "key")
 
-#### liveness
 ![liveness](./graphs/tagtraum_cd2c/liveness.png "liveness")
 
-#### loudness
 ![loudness](./graphs/tagtraum_cd2c/loudness.png "loudness")
 
-#### mode
 ![mode](./graphs/tagtraum_cd2c/mode.png "mode")
 
-#### speechiness
 ![speechiness](./graphs/tagtraum_cd2c/speechiness.png "speechiness")
 
-#### tempo
 ![tempo](./graphs/tagtraum_cd2c/tempo.png "tempo")
 
-#### time_signature
 ![time_signature](./graphs/tagtraum_cd2c/time_signature.png "time_signature")
 
-#### valence
 ![valence](./graphs/tagtraum_cd2c/valence.png "valence")
 
 
@@ -155,6 +142,9 @@ With the model trained, any track on Spotify can be classified using the network
 either `python run.py classify -t "track_id"` or `python run.py classify -s "search terms"`. This still depends
 on TensorFlow, so if you've been running TensorFlow through the included Docker image you should run
 `docker_tf run.py classify <your parameters>`. 
+
+A pre-trained model is available in the `model` folder. To use it, copy it to `out_folder/model` 
+(by default, this is `data/out/model`).
 
 ## References
 
